@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>細胞生物學雙語教材 | Cell Structure and Function</title>
+<style>
+  :root {
+    --navy: #1a2744;
+    --navy-light: #2c3e5d;
+    --gold: #c9a227;
+    --gold-light: #e8c95c;
+    --teal: #1f7a6c;
+    --teal-light: #2da08e;
+    --bg: #ffffff;
+    --bg-soft: #f7f8fa;
+    --text: #1a2744;
+    --text-soft: #4a5568;
+    --border: #e2e6ec;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== Header ===== */
+  .app-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    color: #fff;
+    padding: 22px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+  .app-header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .app-title {
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .app-title .en {
+    display: block;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--gold-light);
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+  .progress-pill {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* ===== Concept nav bar ===== */
+  .concept-nav {
+    background: var(--bg-soft);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    position: sticky;
+    top: 78px;
+    z-index: 90;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .concept-nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    gap: 8px;
+  }
+  .concept-chip {
+    flex-shrink: 0;
+    background: #fff;
+    border: 1.5px solid var(--border);
+    color: var(--text-soft);
+    border-radius: 16px;
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .concept-chip:hover { border-color: var(--teal-light); color: var(--teal); }
+  .concept-chip.active {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: #fff;
+  }
+
+  /* ===== Main content ===== */
+  .main-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 16px 100px;
+  }
+
+  .slide-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 18px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    scroll-margin-top: 140px;
+  }
+
+  .slide-card-header {
+    padding: 16px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    user-select: none;
+  }
+  .slide-card-header:hover { background: var(--bg-soft); }
+
+  .slide-num {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: var(--navy);
+    color: var(--gold-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .slide-titles { flex: 1; min-width: 0; }
+  .slide-ch-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 0 0 2px;
+  }
+  .slide-en-title {
+    font-size: 12.5px;
+    color: var(--text-soft);
+    margin: 0;
+    font-style: italic;
+  }
+  .expand-icon {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--bg-soft);
+    color: var(--teal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    transition: transform 0.2s;
+  }
+  .slide-card.open .expand-icon { transform: rotate(45deg); background: var(--teal); color: #fff; }
+
+  .slide-body {
+    display: none;
+    padding: 4px 20px 22px;
+    border-top: 1px solid var(--border);
+  }
+  .slide-card.open .slide-body { display: block; }
+
+  .slide-img-wrap {
+    margin: 16px 0 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg-soft);
+  }
+  .slide-img-wrap img {
+    width: 100%;
+    display: block;
+  }
+
+  .sentence-block {
+    margin-bottom: 14px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .en-line {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    background: #fdf8ec;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .en-line:hover { background: #faf0d4; }
+  .en-line:active { background: #f5e6bd; }
+  .en-line.speaking { background: #f5e6bd; }
+  .speaker-icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    margin-top: 1px;
+  }
+  .en-text {
+    font-size: 15.5px;
+    line-height: 1.5;
+    color: var(--navy);
+    font-weight: 600;
+  }
+  .zh-line {
+    padding: 12px 14px 14px 52px;
+    background: #fff;
+    font-size: 14.5px;
+    line-height: 1.85;
+    color: var(--text-soft);
+  }
+
+  .hint-bar {
+    font-size: 12.5px;
+    color: var(--text-soft);
+    background: var(--bg-soft);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* ===== Floating nav buttons ===== */
+  .float-nav {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 95;
+  }
+  .float-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .float-btn:active { transform: scale(0.94); }
+  .float-btn.gold { background: var(--gold); }
+
+  /* ===== Welcome banner ===== */
+  .welcome-banner {
+    background: linear-gradient(135deg, #fdf8ec 0%, #f7f0d8 100%);
+    border: 1.5px solid var(--gold-light);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--navy);
+  }
+  .welcome-banner b { color: var(--teal); }
+
+  @media (max-width: 600px) {
+    .app-title { font-size: 16px; }
+    .slide-ch-title { font-size: 15px; }
+    .en-text { font-size: 14.5px; }
+    .zh-line { padding-left: 14px; font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="app-header-inner">
+    <div class="app-title">
+      細胞的結構與功能
+      <span class="en">Cell Structure and Function · 雙語互動教材</span>
+    </div>
+    <div class="progress-pill" id="progressPill">0 / 51 已展開</div>
+  </div>
+</div>
+
+<div class="concept-nav">
+  <div class="concept-nav-inner" id="conceptNav"></div>
+</div>
+
+<div class="main-wrap">
+  <div class="welcome-banner">
+    💡 使用說明：點擊每張卡片可以<b>展開／收合</b>內容；點擊<b>英文句子</b>（黃色底色）可以讓瀏覽器<b>朗讀發音</b>；句子下方則是<b>中文白話講解</b>，已補充課本沒有寫清楚的生物知識點。建議搭配原始投影片圖片對照閱讀。
+  </div>
+  <div id="slidesContainer"></div>
+</div>
+
+<div class="float-nav">
+  <button class="float-btn gold" id="topBtn" title="回到頂部">↑</button>
+</div>
+
+<script src="data_part1.js"></script>
+<script src="data_part2.js"></script>
+<script src="data_part3.js"></script>
+<script src="data_part4.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
